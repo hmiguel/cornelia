@@ -47,6 +47,9 @@ struct CorneliaApp: App {
         }
         .defaultSize(width: 1280, height: 760)
         .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button("About Cornelia") { showAboutPanel(player: model.player) }
+            }
             CommandGroup(replacing: .newItem) {
                 Button("Open Playlist File…") { openPlaylistFile(model) }.keyboardShortcut("o")
                 Button("Open Playlist URL…") { model.showOpenURL = true }.keyboardShortcut("l")
@@ -94,4 +97,48 @@ enum LegacyMigration {
             }
         }
     }
+}
+
+// MARK: About
+
+let repositoryURL = URL(string: "https://github.com/hmiguel/cornelia")!
+
+@MainActor
+func showAboutPanel(player: MPVPlayer) {
+    let info = Bundle.main.infoDictionary ?? [:]
+    let version = info["CFBundleShortVersionString"] as? String ?? "dev"
+    let build = info["CFBundleVersion"] as? String ?? "1"
+
+    let mpvVersion = (player.stringProperty("mpv-version") ?? "mpv").replacingOccurrences(of: "mpv ", with: "")
+    let ffmpegVersion = player.stringProperty("ffmpeg-version") ?? "unknown"
+
+    let center = NSMutableParagraphStyle()
+    center.alignment = .center
+    center.paragraphSpacing = 6
+    let body: [NSAttributedString.Key: Any] = [
+        .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
+        .foregroundColor: NSColor.labelColor,
+        .paragraphStyle: center,
+    ]
+    let dim: [NSAttributedString.Key: Any] = [
+        .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
+        .foregroundColor: NSColor.secondaryLabelColor,
+        .paragraphStyle: center,
+    ]
+
+    let credits = NSMutableAttributedString()
+    credits.append(NSAttributedString(string: "A small, fast IPTV player for macOS.\n", attributes: body))
+    var link = body
+    link[.link] = repositoryURL
+    credits.append(NSAttributedString(string: "github.com/hmiguel/cornelia\n\n", attributes: link))
+    credits.append(NSAttributedString(string: "Playback by mpv \(mpvVersion) and FFmpeg \(ffmpegVersion).\n", attributes: dim))
+    credits.append(NSAttributedString(string: "Free software under the GPL-3.0 license. No channels included.", attributes: dim))
+
+    NSApp.activate(ignoringOtherApps: true)
+    NSApp.orderFrontStandardAboutPanel(options: [
+        .applicationName: "Cornelia",
+        .applicationVersion: version,
+        .version: "Build \(build)",
+        .credits: credits,
+    ])
 }

@@ -171,6 +171,13 @@ final class MPVPlayer {
         if let p = pending { pending = nil; play(p) }
     }
 
+    /// Reads an mpv property as a string, e.g. "mpv-version" or "ffmpeg-version".
+    func stringProperty(_ name: String) -> String? {
+        guard let h = handle, let c = mpv_get_property_string(h, name) else { return nil }
+        defer { mpv_free(c) }
+        return String(cString: c)
+    }
+
     func shutdown() {
         guard let h = handle else { return }
         videoView.videoLayer.freeRenderContext()
