@@ -24,7 +24,7 @@ Cornelia does not include or point to any channels. Bring your own playlist.
 
 ## Download
 
-Grab the latest zip from [Releases](../../releases/latest), unzip it and move `Cornelia.app` to Applications. Release builds bundle libmpv, so nothing else is needed.
+Grab the latest `.dmg` from [Releases](../../releases/latest), open it and drag Cornelia onto Applications. A `.zip` is there too. Release builds bundle libmpv, so nothing else is needed.
 
 The app is not notarized. On first launch, right click it and choose Open, or run:
 
@@ -48,11 +48,11 @@ Release builds are for Apple Silicon and macOS 14 or later.
 
 This builds `Cornelia.app` and installs it to `~/Applications`. This dev build links Homebrew's `libmpv`, so keep `mpv` installed.
 
-`./build.sh --release 1.2.0` makes a self-contained build with libmpv and its dependencies bundled, packaged as `dist/Cornelia-1.2.0-arm64.zip`.
+`./build.sh --release 1.2.0` makes a self-contained build with libmpv and its dependencies bundled, packaged as `dist/Cornelia-1.2.0-arm64.dmg` and `.zip`.
 
 ## Releasing
 
-Push a version tag and GitHub Actions builds the self-contained app and publishes a release with the zip and its SHA-256 checksum:
+Push a version tag and GitHub Actions builds the self-contained app and publishes a release with the DMG, the zip and their SHA-256 checksums:
 
     git tag v1.2.0
     git push origin v1.2.0

@@ -27,7 +27,7 @@ jobs:
         run: |
           if [ "$GITHUB_REF_TYPE" = "tag" ]; then VERSION="$GITHUB_REF_NAME"; else VERSION="0.0.0-${GITHUB_SHA::7}"; fi
           ./build.sh --release "$VERSION"
-          cd dist && shasum -a 256 *.zip > SHA256SUMS.txt && cat SHA256SUMS.txt
+          cd dist && shasum -a 256 *.dmg *.zip > SHA256SUMS.txt && cat SHA256SUMS.txt
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -43,8 +43,8 @@ jobs:
           cat > notes.md <<'NOTES'
           ## Install
 
-          1. Download the zip below and unzip it.
-          2. Move `Cornelia.app` to Applications.
+          1. Download the `.dmg` below and open it.
+          2. Drag Cornelia onto the Applications shortcut.
           3. The app is not notarized, so the first time either right click it and choose **Open**, or run:
 
              ```

@@ -3,7 +3,7 @@
 #
 #   ./build.sh                    Dev build, links Homebrew's libmpv, installs to ~/Applications.
 #   ./build.sh --release 1.2.0    Self-contained build with libmpv and its dependencies bundled
-#                                 inside the app, packaged as dist/Cornelia-1.2.0-<arch>.zip.
+#                                 inside the app, packaged as dist/Cornelia-1.2.0-<arch>.dmg and .zip.
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -101,3 +101,15 @@ ZIP="dist/Cornelia-${VERSION}-${ARCH}.zip"
 rm -f "$ZIP"
 ditto -c -k --keepParent --sequesterRsrc "$APP" "$ZIP"
 echo "Release: $ZIP ($(du -h "$ZIP" | cut -f1), $(ls "$FW" | wc -l | tr -d ' ') bundled libraries)"
+
+# Disk image: open it, drag Cornelia onto the Applications shortcut.
+DMG="dist/Cornelia-${VERSION}-${ARCH}.dmg"
+STAGE=$(mktemp -d)
+trap 'rm -rf "$STAGE"' EXIT
+cp -R "$APP" "$STAGE/"
+ln -s /Applications "$STAGE/Applications"
+[ -f Resources/AppIcon.icns ] && cp Resources/AppIcon.icns "$STAGE/.VolumeIcon.icns" && SetFile -a C "$STAGE" 2>/dev/null || true
+rm -f "$DMG"
+hdiutil create -quiet -volname "Cornelia ${VERSION}" -srcfolder "$STAGE" -fs HFS+ -format ULMO -ov "$DMG"
+codesign --force --sign - "$DMG" >/dev/null
+echo "Release: $DMG ($(du -h "$DMG" | cut -f1))"
