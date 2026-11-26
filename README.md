@@ -101,6 +101,10 @@ To regenerate the icon:
     swift scripts/make-icon.swift /tmp/icon
     iconutil -c icns /tmp/icon/AppIcon.iconset -o Resources/AppIcon.icns
 
+## Credits
+
+Created by Hugo Conceicao ([@hmiguel](https://github.com/hmiguel)). Playback by [mpv](https://mpv.io) and [FFmpeg](https://ffmpeg.org).
+
 ## License
 
 GPL-3.0. See [LICENSE](LICENSE). Cornelia links libmpv, which Homebrew builds under the GPL.

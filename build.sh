@@ -46,7 +46,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
   <key>NSHighResolutionCapable</key><true/>
   <key>NSPrincipalClass</key><string>NSApplication</string>
   <key>LSApplicationCategoryType</key><string>public.app-category.video</string>
-  <key>NSHumanReadableCopyright</key><string>Copyright © $(date +%Y) Cornelia contributors</string>
+  <key>NSHumanReadableCopyright</key><string>Copyright © $(date +%Y) Hugo Conceicao</string>
   <key>NSAppTransportSecurity</key><dict><key>NSAllowsArbitraryLoads</key><true/></dict>
   <key>CFBundleDocumentTypes</key>
   <array><dict>

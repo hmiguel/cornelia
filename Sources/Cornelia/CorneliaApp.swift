@@ -102,6 +102,7 @@ enum LegacyMigration {
 // MARK: About
 
 let repositoryURL = URL(string: "https://github.com/hmiguel/cornelia")!
+let authorURL = URL(string: "https://github.com/hmiguel")!
 
 @MainActor
 func showAboutPanel(player: MPVPlayer) {
@@ -127,10 +128,17 @@ func showAboutPanel(player: MPVPlayer) {
     ]
 
     let credits = NSMutableAttributedString()
-    credits.append(NSAttributedString(string: "A small, fast IPTV player for macOS.\n", attributes: body))
+    credits.append(NSAttributedString(string: "A small, fast IPTV player for macOS.\n\n", attributes: body))
+    var bold = body
+    bold[.font] = NSFont.boldSystemFont(ofSize: NSFont.smallSystemFontSize)
+    credits.append(NSAttributedString(string: "Created by Hugo Conceicao\n", attributes: bold))
+    var authorLink = body
+    authorLink[.link] = authorURL
+    credits.append(NSAttributedString(string: "@hmiguel", attributes: authorLink))
+    credits.append(NSAttributedString(string: "  ·  ", attributes: dim))
     var link = body
     link[.link] = repositoryURL
-    credits.append(NSAttributedString(string: "github.com/hmiguel/cornelia\n\n", attributes: link))
+    credits.append(NSAttributedString(string: "Source on GitHub\n\n", attributes: link))
     credits.append(NSAttributedString(string: "Playback by mpv \(mpvVersion) and FFmpeg \(ffmpegVersion).\n", attributes: dim))
     credits.append(NSAttributedString(string: "Free software under the GPL-3.0 license. No channels included.", attributes: dim))
 
