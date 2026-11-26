@@ -1,0 +1,14 @@
+# Build output
+.build/
+build/
+*.app
+.swiftpm/
+xcuserdata/
+DerivedData/
+
+# macOS
+.DS_Store
+
+# Never commit playlists: they usually contain provider credentials
+*.m3u
+*.m3u8
