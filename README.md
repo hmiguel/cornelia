@@ -22,19 +22,40 @@ Cornelia does not include or point to any channels. Bring your own playlist.
 - Remembers the last channel and resumes it on launch
 - Per channel `User-Agent` and `Referer` from `#EXTVLCOPT`
 
-## Requirements
+## Download
+
+Grab the latest zip from [Releases](../../releases/latest), unzip it and move `Cornelia.app` to Applications. Release builds bundle libmpv, so nothing else is needed.
+
+The app is not notarized. On first launch, right click it and choose Open, or run:
+
+    xattr -dr com.apple.quarantine /Applications/Cornelia.app
+
+Release builds are for Apple Silicon and macOS 14 or later.
+
+## Build from source
+
+### Requirements
 
 - macOS 14 or later
 - [Homebrew](https://brew.sh) with `mpv` installed (the build script installs it if missing)
 - Xcode command line tools (Swift 5.10 or later)
 
-## Build
+### Build
 
     git clone <this repo>
     cd cornelia
     ./build.sh
 
-This builds `Cornelia.app` and installs it to `~/Applications`. The app links Homebrew's `libmpv`, so keep `mpv` installed.
+This builds `Cornelia.app` and installs it to `~/Applications`. This dev build links Homebrew's `libmpv`, so keep `mpv` installed.
+
+`./build.sh --release 1.2.0` makes a self-contained build with libmpv and its dependencies bundled, packaged as `dist/Cornelia-1.2.0-arm64.zip`.
+
+## Releasing
+
+Push a version tag and GitHub Actions builds the self-contained app and publishes a release with the zip and its SHA-256 checksum:
+
+    git tag v1.2.0
+    git push origin v1.2.0
 
 ## Usage
 

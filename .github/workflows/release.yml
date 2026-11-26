@@ -1,0 +1,61 @@
+name: Release
+
+# Push a tag like v1.2.0 to build Cornelia and publish a GitHub release.
+# Run manually (Actions tab) to build without publishing; the zip is kept as a workflow artifact.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 40
+    env:
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+      HOMEBREW_NO_ENV_HINTS: 1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install mpv and dylibbundler
+        run: brew install mpv dylibbundler
+
+      - name: Build self-contained app
+        run: |
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then VERSION="$GITHUB_REF_NAME"; else VERSION="0.0.0-${GITHUB_SHA::7}"; fi
+          ./build.sh --release "$VERSION"
+          cd dist && shasum -a 256 *.zip > SHA256SUMS.txt && cat SHA256SUMS.txt
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cornelia
+          path: dist/*
+
+      - name: Publish release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > notes.md <<'NOTES'
+          ## Install
+
+          1. Download the zip below and unzip it.
+          2. Move `Cornelia.app` to Applications.
+          3. The app is not notarized, so the first time either right click it and choose **Open**, or run:
+
+             ```
+             xattr -dr com.apple.quarantine /Applications/Cornelia.app
+             ```
+
+          Requires macOS 14 or later on Apple Silicon. Everything it needs, including libmpv, is bundled.
+
+          NOTES
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "Cornelia ${GITHUB_REF_NAME#v}" \
+            --notes-file notes.md \
+            --generate-notes \
+            --verify-tag
